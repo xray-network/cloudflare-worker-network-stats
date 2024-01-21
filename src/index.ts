@@ -46,7 +46,7 @@ export default {
           item.host = `server${index}`
         })
         const outputCounter = JSON.parse((await env.KV_STATS.get("outputCounter")) || "{}")
-        const turboTxSendStats = JSON.parse((await env.KV_STATS.get("turboTxSend")) || "{}")
+        const turboTxSendStats = JSON.parse((await env.KV_STATS.get("turboTxSendCounter")) || "{}")
         const cdnCounter = Number((await env.KV_CDN_COUNTER.get("counter")) || 0)
         return addCorsHeaders(
           addContentTypeJSONHeaders(
@@ -56,7 +56,9 @@ export default {
                   health: outputHealth,
                   counter: outputCounter,
                 },
-                turbo_tx_send: turboTxSendStats,
+                turbo_tx_send: {
+                  counter: turboTxSendStats,
+                },
                 cdn: {
                   counter: cdnCounter,
                 },
@@ -244,7 +246,7 @@ const cacheTurboTxSendStats = async (env: Env) => {
       total: 0,
     } as any
   )
-  await env.KV_STATS.put("turboTxSend", JSON.stringify(turboTxSendCounter))
+  await env.KV_STATS.put("turboTxSendCounter", JSON.stringify(turboTxSendCounter))
 }
 
 const cacheXRAYStats = async (env: Env) => {
