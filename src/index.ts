@@ -276,18 +276,36 @@ const cacheXRAYStats = async (env: Env) => {
         ],
       }),
     }),
+    env.OUTPUT_LOAD_BALANCER.fetch(`${API_KOIOS}/address_assets`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        _addresses: [
+          "addr1qx6ndpw2uma2qytf2zynvv4crqdwkmck0a2r4vm20gwkzercd5kvnadmwssrwpce6x4c2rm7t6aj3rlkfh2f775fu7fqsdyray",
+        ],
+      }),
+    }),
   ]
 
-  const [assetSummary, assetInfo, incentiveAddress] = await Promise.all(requests)
+  const [assetSummary, assetInfo, incentiveAddress, devAddress] = await Promise.all(requests)
   const assetSummaryData = ((await assetSummary.json()) as any)?.[0]
   const assetInfoData: any = ((await assetInfo.json()) as any)?.[0]
   const incentiveAddressData: any = (await incentiveAddress.json()) as any
+  const devAddressData: any = (await devAddress.json()) as any
 
-  if (assetSummaryData && assetInfoData && incentiveAddressData) {
+  if (assetSummaryData && assetInfoData && incentiveAddressData && devAddressData) {
     const totalSupply = Number(assetInfoData.total_supply) || 0
     const incentiveSupply =
       Number(
         incentiveAddressData.find((asset: any) => asset.policy_id === policyId && asset.asset_name === assetName)
+          ?.quantity
+      ) || 0
+    const devSupply =
+      Number(
+        devAddressData.find((asset: any) => asset.policy_id === policyId && asset.asset_name === assetName)
           ?.quantity
       ) || 0
 
@@ -301,7 +319,7 @@ const cacheXRAYStats = async (env: Env) => {
       total_supply: totalSupply / 1000000,
       incentive_supply: incentiveSupply,
       circulating_supply: (totalSupply - incentiveSupply) / 1000000,
-      circulating_supply_pct: (totalSupply - incentiveSupply) / totalSupply,
+      circulating_supply_pct: (totalSupply - incentiveSupply) / totalSupply * 100,
       creation_time: assetInfoData.creation_time,
       total_transactions: assetSummaryData.total_transactions,
       wallets_staked: assetSummaryData.staked_wallets,
@@ -317,6 +335,8 @@ const cacheXRAYStats = async (env: Env) => {
         stage2_distributed: (50145921000000 - incentiveSupply) / 1000000,
         stage2_distributed_pct: (1 - incentiveSupply / 50145921000000) * 100,
         dev_fund: 58506540,
+        dev_fund_left: devSupply / 1000000,
+        dev_fund_left_pct: (devSupply / 58506540000000) * 100,
         founders_fund: 32492224,
       },
     }
