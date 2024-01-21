@@ -41,14 +41,21 @@ export default {
 
     try {
       if (type === "graph") {
-        const outputStats = JSON.parse((await env.KV_STATS.get("output")) || "{}")
+        const outputHealth = JSON.parse((await env.KV_OUTPUT_HEALTH.get("status")) || "{}")
+        outputHealth?.status?.forEach((item: any, index: number) => {
+          item.host = `server${index}`
+        })
+        const outputCounter = JSON.parse((await env.KV_STATS.get("outputCounter")) || "{}")
         const turboTxSendStats = JSON.parse((await env.KV_STATS.get("turboTxSend")) || "{}")
         const cdnCounter = Number((await env.KV_CDN_COUNTER.get("counter")) || 0)
         return addCorsHeaders(
           addContentTypeJSONHeaders(
             new Response(
               JSON.stringify({
-                output: outputStats,
+                output: {
+                  health: outputHealth,
+                  counter: outputCounter,
+                },
                 turbo_tx_send: turboTxSendStats,
                 cdn: {
                   counter: cdnCounter,
@@ -200,10 +207,6 @@ export default {
 }
 
 const cacheOutputStats = async (env: Env) => {
-  const outputHealth = JSON.parse((await env.KV_OUTPUT_HEALTH.get("status")) || "{}")
-  outputHealth?.status?.forEach((item: any, index: number) => {
-    item.host = `server${index}`
-  })
   const outputCounterValues = await getAllKVValues(env.KV_OUTPUT_COUNTER)
   const outputCounter = outputCounterValues.reduce(
     (acc, { key, value }) => {
@@ -220,11 +223,8 @@ const cacheOutputStats = async (env: Env) => {
     } as any
   )
   await env.KV_STATS.put(
-    "output",
-    JSON.stringify({
-      health: outputHealth,
-      counter: outputCounter,
-    })
+    "outputCounter",
+    JSON.stringify(outputCounter)
   )
 }
 
