@@ -46,7 +46,7 @@ export default {
           item.host = `server${index}`
         })
         const outputCounter = JSON.parse((await env.KV_STATS.get("outputCounter")) || "{}")
-        const turboTxSendStats = JSON.parse((await env.KV_STATS.get("turboTxSendCounter")) || "{}")
+        const turboTxSendCounter = JSON.parse((await env.KV_STATS.get("turboTxSendCounter")) || "{}")
         const cdnCounter = Number((await env.KV_CDN_COUNTER.get("counter")) || 0)
         return addCorsHeaders(
           addContentTypeJSONHeaders(
@@ -57,7 +57,7 @@ export default {
                   counter: outputCounter,
                 },
                 turbo_tx_send: {
-                  counter: turboTxSendStats,
+                  counter: turboTxSendCounter,
                 },
                 cdn: {
                   counter: cdnCounter,
@@ -368,9 +368,9 @@ const cacheGitStats = async (env: Env) => {
     })
     .filter((repo: any) => !repo.private)
 
-  const dateUntil = new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString()
+  const dateSince = new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString()
   const commmits = reposMapped.map((repo: any) => {
-    return fetch(`https://api.github.com/repos/xray-network/${repo.name}/commits?since=${dateUntil}`, {
+    return fetch(`https://api.github.com/repos/xray-network/${repo.name}/commits?since=${dateSince}`, {
       headers: {
         Authorization: `Bearer ${env.GIT_KEY}`,
         "X-GitHub-Api-Version": "2022-11-28",
