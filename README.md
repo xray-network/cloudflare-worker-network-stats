@@ -1,1 +1,1 @@
-# cloudflare-worker-xray-stats
+# cloudflare-worker-network-stats

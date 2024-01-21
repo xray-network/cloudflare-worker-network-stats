@@ -1,0 +1,18 @@
+name = "network-stats"
+main = "src/index.ts"
+compatibility_date = "2023-11-24"
+
+services = [
+  { binding = "OUTPUT_LOAD_BALANCER", service = "output-load-balancer" },
+]
+
+kv_namespaces = [
+  { binding = "KV_STATS", id = "4ab0532236a144288c3b26f908a41e7f" },
+  { binding = "KV_OUTPUT_COUNTER", id = "291cb6a9a51d43559bbb99a2ed67f453" },
+  { binding = "KV_OUTPUT_HEALTH", id = "a9485f23e7004be984f31e90cae34770" },
+  { binding = "KV_TURBO_TX_SEND_COUNTER", id = "6342ef1ac97540b7ba8a632b85211624" },
+  { binding = "KV_CDN_COUNTER", id = "76edc9c0e130486a807b29c30fe1b0d4" }
+]
+
+[triggers]
+crons = ["*/15 * * * *", "0 * * * *"]
