@@ -44,7 +44,7 @@ yarn deploy
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| GET | /stats/graph |XRAY \| Graph Statistics |
+| GET | /stats/graph | XRAY \| Graph Statistics |
 | GET | /stats/stage1 | Stage 1 Statistics (ISPO, etc) |
 | GET | /stats/xray | XRAY \| Network Statistics |
 | GET | /stats/circulating-supply | XRAY Token Circulating Supply |
