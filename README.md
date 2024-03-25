@@ -14,8 +14,8 @@
 ``` console
 git clone \
   --recurse-submodules \
-  https://github.com/xray-network/cloudflare-worker-turbo-tx-send/.git \
-  && cd cloudflare-worker-turbo-tx-send/
+  https://github.com/xray-network/cloudflare-worker-turbo-tx-send.git \
+  && cd cloudflare-worker-turbo-tx-send
 ```
 
 ### Edit [wrangler.toml](https://github.com/xray-network/cloudflare-worker-output-load-balancer/blob/main/wrangler.toml)
