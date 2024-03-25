@@ -9,7 +9,7 @@ import jsonIspoDrop from "./ispo_drop.json"
 import jsonIspoHistory from "./ispo_history.json"
 
 const API_GROUP = "stats"
-const API_TYPES: Types.StatsType[] = ["graph", "stage1", "xray", "circulating-supply", "cardano", "git"]
+const API_TYPES: Types.StatsType[] = ["graph", "stage1", "xray", "circulating-supply", "total-supply", "cardano", "git"]
 const ALLOWED_METHODS = ["GET", "POST", "OPTIONS", "HEAD"]
 const API_KOIOS = `https://service-binding/output/koios/mainnet/api/v1` // https://koios.rest can be used also
 
@@ -101,7 +101,7 @@ export default {
       }
 
       /**
-       * XRAY circulating supply endpoint for CMC
+       * XRAY circulating supply endpoint
        */
 
       if (type === "circulating-supply") {
@@ -127,6 +127,15 @@ export default {
           ) || 0
         const circulatingSupply = (totalSupply - incentiveSupply) / 1000000
         return addCorsHeaders(new Response(circulatingSupply.toString()))
+      }
+
+      /**
+       * XRAY total supply endpoint
+       */
+
+      if (type === "total-supply") {
+        const totalSupply = 324922240000000
+        return addCorsHeaders(new Response(totalSupply.toString()))
       }
 
       /**
@@ -198,8 +207,8 @@ export default {
         await cacheOutputStats(env)
         await cacheTurboTxSendStats(env)
       }
-      // Every 1 hour at 0 minute
-      if (event.cron === "0 * * * *") {
+      // Every 1 hour at 1 minute, not to overlap */15 https://community.cloudflare.com/t/second-cron-trigger-does-not-run/615334
+      if (event.cron === "1 * * * *") {
         await cacheXRAYStats(env)
         await cacheGitStats(env)
       }
@@ -224,10 +233,7 @@ const cacheOutputStats = async (env: Env) => {
       total: 0,
     } as any
   )
-  await env.KV_STATS.put(
-    "outputCounter",
-    JSON.stringify(outputCounter)
-  )
+  await env.KV_STATS.put("outputCounter", JSON.stringify(outputCounter))
 }
 
 const cacheTurboTxSendStats = async (env: Env) => {
@@ -307,8 +313,7 @@ const cacheXRAYStats = async (env: Env) => {
       ) || 0
     const devSupply =
       Number(
-        devAddressData.find((asset: any) => asset.policy_id === policyId && asset.asset_name === assetName)
-          ?.quantity
+        devAddressData.find((asset: any) => asset.policy_id === policyId && asset.asset_name === assetName)?.quantity
       ) || 0
 
     const stats = {
@@ -321,7 +326,7 @@ const cacheXRAYStats = async (env: Env) => {
       total_supply: totalSupply / 1000000,
       incentive_supply: incentiveSupply,
       circulating_supply: (totalSupply - incentiveSupply) / 1000000,
-      circulating_supply_pct: (totalSupply - incentiveSupply) / totalSupply * 100,
+      circulating_supply_pct: ((totalSupply - incentiveSupply) / totalSupply) * 100,
       creation_time: assetInfoData.creation_time,
       total_transactions: assetSummaryData.total_transactions,
       wallets_staked: assetSummaryData.staked_wallets,
