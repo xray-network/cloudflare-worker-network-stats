@@ -14,11 +14,11 @@
 ``` console
 git clone \
   --recurse-submodules \
-  https://github.com/xray-network/cloudflare-worker-turbo-tx-send.git \
-  && cd cloudflare-worker-turbo-tx-send
+  https://github.com/xray-network/cloudflare-worker-network-stats.git \
+  && cd cloudflare-worker-network-stats
 ```
 
-### Edit [wrangler.toml](https://github.com/xray-network/cloudflare-worker-output-load-balancer/blob/main/wrangler.toml)
+### Edit [wrangler.toml](https://github.com/xray-network/cloudflare-worker-network-stats/blob/main/wrangler.toml)
 
 ```
 change KV_STATS id
