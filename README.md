@@ -3,7 +3,7 @@
 # XRAY | Graph | Network Stats — Cloudflare Worker
 
 > [!WARNING]
-> **DEPRECATED:** The tool has been moved to XRAY | Graph | Output, which is an internal proprietary XRAY project that acts as a load balancer and proxy tool for API management and documentation in OpenAPI format
+> **DEPRECATED:** The tool has been moved to XRAY | Graph | Output, which is an internal proprietary XRAY project that acts as a load balancer and proxy tool for API access management and documentation in OpenAPI format
 
 > [!NOTE]
 > XRAY | Graph | Network Stats — Statistics of various indicators for Cardano and XRAY
