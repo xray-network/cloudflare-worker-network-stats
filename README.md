@@ -39,3 +39,15 @@ yarn start
 ```
 yarn deploy
 ```
+
+## Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /stats/graph |XRAY \| Graph Statistics |
+| GET | /stats/stage1 | Stage 1 Statistics (ISPO, etc) |
+| GET | /stats/xray | XRAY \| Network Statistics |
+| GET | /stats/circulating-supply | XRAY Token Circulating Supply |
+| GET | /stats/total-supply | XRAY Token Total Supply |
+| GET | /stats/cardano | Cardano Statistics |
+| GET | /stats/git | XRAY Git Development Statistics |
